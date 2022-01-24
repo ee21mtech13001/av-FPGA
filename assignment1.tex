@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{karnaugh-map}
+\usetikzlibrary{calc}
+\usepackage{placeins}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{multicol}
+\usepackage{amssymb}
+\usepackage[framed]{matlab-prettifier}
+\usepackage{graphicx}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{enumerate}
+\usepackage{circuitikz}
+
+\title{Assignment 1 | FPGA Lab}
+\author{ASHUTOSH VERMA(EE21MTECH13001)}
+\date{January 2022}
+
+\begin{document}
+\maketitle
+
+\section{Question}
+
+Reduce the following Boolean Expression to its simplest form using K-Map :
+
+    F(A,B,C,D) = $ \sum(0,2,3,4,5,8,10,11,12,13)$
+
+\section{Solution}
+
+\subsection{KMAP Implementation}
+Given SOP expression  can be minimized using a KMap (Figure 1). 
+
+\begin{figure}[!ht]
+\centering
+\resizebox{\columnwidth}{!}
+{
+\begin{karnaugh-map}[4][4][1][CD][AB]
+    \minterms{0,2,3,4,5,8,10,11,12,13}
+    \maxterms{1,6,7,9,14,15}
+    \implicantedge{3}{2}{11}{10}
+    \implicant{4}{13}
+    \implicant{0}{8}
+     \end{karnaugh-map}
+}
+\caption{SOP for F}
+\label{fig:kmap_F_SOP}
+\end{figure}
+\FloatBarrier
+
+\subsection{Minimized SOP Expression}
+$ Y = $\overline{C}.\overline{D} +B.\overline{C}+B.C$
+  = $ B(C+\overline{C}) +$\overline{C}.\overline{D}$
+  = $ B+\overline{C}.\overline{D} $\\
+
+\subsection{NAND Logic Implementation}
+
+\begin{center}
+To implement it using NAND Logic, we convert the simplified SOP expression to suite the NAND logic, which gives :
+
+\vspace{15pt}
+  $Y = \overline{\overline{B}.\overline{\overline{C}.D}}$\\
+   \vspace{15pt}
+     \vspace{5pt}
+  \end{center}
+
+\vspace{30pt}
+
+
+The last expression can be implemented using only two input-NAND Gates.
+\vspace{30pt}
+\begin{center}
+\begin{circuitikz}
+\draw
+
+(0,0)node[nand port](mynand1){}
+
+(0,4)node[nand port](mynand2){}
+
+(2,0)node[nand port](mynand3){}
+
+(6,2)node[nand port](mynand8){}
+
+(mynand1.out)|-(mynand3.in 1)
+(mynand2.out)|-(mynand8.in 1)
+(mynand3.out)|-(mynand8.in 2)
+(mynand1.in 1)|-(mynand1.in 2)
+(mynand2.in 1)|-(mynand2.in 2)
+
+
+(mynand1.in 1) node (A1)     [anchor=east]           {C}
+(mynand2.in 1) node (A2)     [anchor=east]           {B}
+(mynand3.in 2) node (A3)     [anchor=east]           {D}
+(mynand8.out)  node (A4)     [anchor=east, xshift=0.5cm]  {F};
+
+\end{circuitikz}
+\end{center}
+
+\end{document}
